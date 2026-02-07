@@ -10,7 +10,7 @@ const openModal = (bodyElem, torrentElem) => {
   // modal element
   const modalElem = document.createElement('div')
   modalElem.classList.add('modal')
-  const filesContent = torrentFiles
+  const filesContent = torrentFiles.length > 0
     ? `
     <h2>Arquivos:</h2>
     <ul class="files">
@@ -21,8 +21,8 @@ const openModal = (bodyElem, torrentElem) => {
   modalElem.innerHTML = `
     <div class="close"></div>
     <div class="modal-content">
-      <h1>${torrentName}</h1>
-      <p><strong>Seeds:</strong> ${torrentNumSeeds} / <strong>Peers:</strong> ${torrentNumPeers}</p>
+      <h1>${torrentName || '-'}</h1>
+      <p><strong>Seeds:</strong> ${torrentNumSeeds || '-'} / <strong>Peers:</strong> ${torrentNumPeers || '-'}</p>
       ${filesContent}
     </div>
   `
