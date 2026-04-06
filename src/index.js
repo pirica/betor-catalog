@@ -38,7 +38,7 @@ class BetorCatalog {
       headers: this.options.betorApiAuthorization ? { Authorization: `Basic ${this.options.betorApiAuthorization}` } : {}
     })
     if (!res.ok) {
-      if (attempt < 3) {
+      if (attempt <= 5) {
         console.warn(`Error to fetch page ${page}: ${res.status}, retrying... (attempt ${attempt})`)
         return this.fetchCatalogItems(page, attempt + 1, items)
       }
