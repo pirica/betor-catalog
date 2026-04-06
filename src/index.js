@@ -31,13 +31,17 @@ class BetorCatalog {
     this.write(ITEMS_GROUP_BY_IMDB_ID_AND_SEASON_PATH, itemsByImdbAndSeason)
   }
 
-  async fetchCatalogItems (page = 1, items = []) {
-    const url = `${this.options.betorApiUrl}/v1/catalog/?size=100&page=${page}`
+  async fetchCatalogItems (page = 1, attempt = 1, items = []) {
+    const url = `${this.options.betorApiUrl}/v1/catalog/?size=50&page=${page}`
     console.log(`fetching catalog page ${page}: ${url}`)
     const res = await fetch(url, {
       headers: this.options.betorApiAuthorization ? { Authorization: `Basic ${this.options.betorApiAuthorization}` } : {}
     })
     if (!res.ok) {
+      if (attempt < 3) {
+        console.warn(`Error to fetch page ${page}: ${res.status}, retrying... (attempt ${attempt})`)
+        return this.fetchCatalogItems(page, attempt + 1, items)
+      }
       throw new Error(`Error to fetch page ${page}: ${res.status}`)
     }
     const data = await res.json()
@@ -48,7 +52,7 @@ class BetorCatalog {
     if (page >= data.pages) {
       return newItems
     }
-    return this.fetchCatalogItems(page + 1, newItems)
+    return this.fetchCatalogItems(page + 1, 1, newItems)
   }
 
   async enrichItems (items) {
