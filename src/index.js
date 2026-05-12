@@ -3,6 +3,7 @@ import { Eleventy } from '@11ty/eleventy'
 import PQueue from 'p-queue'
 
 const ITEMS_PATH = 'src/_data/items.json'
+const RAW_ITEMS_PATH = 'src/_data/rawItems.json'
 const MOVIES_PATH = 'src/_data/movies.json'
 const TVS_PATH = 'src/_data/tvs.json'
 const ITEMS_GROUP_BY_IMDB_ID_PATH = 'src/_data/itemsByImdbId.json'
@@ -19,9 +20,17 @@ class BetorCatalog {
 
   async buildItems () {
     console.log('building items data...')
-    const items = await this.fetchCatalogItems()
-    console.log(`${items.length} catalog items found`)
-    const enrichedItems = await this.enrichItems(items)
+
+    const rawItems = await this.fetchRawItems()
+    console.log(`${rawItems.length} raw items found`)
+    this.write(RAW_ITEMS_PATH, rawItems)
+
+    const catalogItems = this.buildCatalogItems(rawItems)
+    console.log(`${catalogItems.length} catalog items generated`)
+
+    const enrichedItems = await this.enrichItems(catalogItems)
+    console.log('catalog items enriched with TMDB metadata')
+
     this.write(ITEMS_PATH, enrichedItems)
     this.write(MOVIES_PATH, enrichedItems.filter(({ item_type: itemType }) => (itemType === 'movie')))
     this.write(TVS_PATH, enrichedItems.filter(({ item_type: itemType }) => (itemType === 'tv')))
@@ -29,30 +38,6 @@ class BetorCatalog {
     this.write(ITEMS_GROUP_BY_IMDB_ID_PATH, itemsByImdb)
     const itemsByImdbAndSeason = await this.groupBySeason(enrichedItems, 'imdb_id')
     this.write(ITEMS_GROUP_BY_IMDB_ID_AND_SEASON_PATH, itemsByImdbAndSeason)
-  }
-
-  async fetchCatalogItems (page = 1, attempt = 1, items = []) {
-    const url = `${this.options.betorApiUrl}/v1/catalog/?size=50&page=${page}`
-    console.log(`fetching catalog page ${page}: ${url}`)
-    const res = await fetch(url, {
-      headers: this.options.betorApiAuthorization ? { Authorization: `Basic ${this.options.betorApiAuthorization}` } : {}
-    })
-    if (!res.ok) {
-      if (attempt <= 5) {
-        console.warn(`Error to fetch page ${page}: ${res.status}, retrying... (attempt ${attempt})`)
-        return this.fetchCatalogItems(page, attempt + 1, items)
-      }
-      throw new Error(`Error to fetch page ${page}: ${res.status}`)
-    }
-    const data = await res.json()
-    if (!data.items || !Array.isArray(data.items)) {
-      throw new Error('Unexpected body!')
-    }
-    const newItems = [...items, ...data.items]
-    if (page >= data.pages) {
-      return newItems
-    }
-    return this.fetchCatalogItems(page + 1, 1, newItems)
   }
 
   async enrichItems (items) {
@@ -66,11 +51,126 @@ class BetorCatalog {
       return { ...item, info: infoCache }
     }
     if (item.imdb_id) {
-      const itemInfo = await this.getItemInfoFromImdb(item)
-      this.setInfoCache(item.imdb_id, itemInfo)
-      return { ...item, info: itemInfo }
+      try {
+        const itemInfo = await this.getItemInfoFromImdb(item)
+        this.setInfoCache(item.imdb_id, itemInfo)
+        return { ...item, info: itemInfo }
+      } catch (err) {
+        console.warn(`Failed to enrich item ${item.imdb_id}: ${err.message}`)
+        return item
+      }
     }
     return item
+  }
+
+  async fetchRawItems (page = 1, attempt = 1, items = []) {
+    const url = `${this.options.betorApiUrl}/v1/items/?sort=-inserted_at&size=100&page=${page}`
+    console.log(`fetching items page ${page}: ${url}`)
+    const res = await fetch(url, {
+      headers: this.options.betorApiAuthorization ? { Authorization: `Basic ${this.options.betorApiAuthorization}` } : {}
+    })
+    if (!res.ok) {
+      if (attempt <= 5) {
+        console.warn(`Error to fetch page ${page}: ${res.status}, retrying... (attempt ${attempt})`)
+        return this.fetchRawItems(page, attempt + 1, items)
+      }
+      throw new Error(`Error to fetch page ${page}: ${res.status}`)
+    }
+    const data = await res.json()
+    if (!data.items || !Array.isArray(data.items)) {
+      throw new Error('Unexpected body!')
+    }
+    const newItems = [...items, ...data.items]
+    if (page >= data.pages) {
+      return newItems
+    }
+    if (this.options.pagesLimit && page >= this.options.pagesLimit) {
+      console.log(`Reached page limit of ${this.options.pagesLimit} pages`)
+      return newItems
+    }
+    return this.fetchRawItems(page + 1, 1, newItems)
+  }
+
+  buildCatalogItems (rawItems) {
+    const filteredItems = rawItems.filter(item => (
+      item.item_type != null &&
+      item.updated_at != null &&
+      item.imdb_id != null &&
+      item.tmdb_id != null
+    ))
+
+    const providerGroups = {}
+    filteredItems.forEach(item => {
+      const providerKey = [
+        item.item_type,
+        item.imdb_id,
+        item.tmdb_id,
+        item.provider_slug,
+        item.provider_url
+      ].join('|')
+
+      if (!providerGroups[providerKey]) {
+        providerGroups[providerKey] = {
+          item_type: item.item_type,
+          imdb_id: item.imdb_id,
+          tmdb_id: item.tmdb_id,
+          provider_slug: item.provider_slug,
+          provider_url: item.provider_url,
+          last_updated: item.updated_at,
+          torrents: []
+        }
+      }
+
+      const providerGroup = providerGroups[providerKey]
+      if (providerGroup.last_updated < item.updated_at) {
+        providerGroup.last_updated = item.updated_at
+      }
+
+      providerGroup.torrents.push({
+        magnet_uri: item.magnet_uri,
+        languages: item.languages,
+        torrent_name: item.torrent_name ?? item.magnet_dn,
+        torrent_size: item.torrent_size,
+        torrent_files: item.torrent_files,
+        download_path: item.download_path,
+        torrent_num_peers: item.torrent_num_peers,
+        torrent_num_seeds: item.torrent_num_seeds,
+        seasons: item.seasons,
+        inserted_at: item.inserted_at
+      })
+    })
+
+    const catalogGroups = {}
+    Object.values(providerGroups).forEach(providerGroup => {
+      const catalogKey = [
+        providerGroup.item_type,
+        providerGroup.imdb_id,
+        providerGroup.tmdb_id
+      ].join('|')
+
+      if (!catalogGroups[catalogKey]) {
+        catalogGroups[catalogKey] = {
+          item_type: providerGroup.item_type,
+          imdb_id: providerGroup.imdb_id,
+          tmdb_id: providerGroup.tmdb_id,
+          last_updated: providerGroup.last_updated,
+          providers: []
+        }
+      }
+
+      const catalogGroup = catalogGroups[catalogKey]
+      if (catalogGroup.last_updated < providerGroup.last_updated) {
+        catalogGroup.last_updated = providerGroup.last_updated
+      }
+
+      catalogGroup.providers.push({
+        slug: providerGroup.provider_slug,
+        url: providerGroup.provider_url,
+        torrents: providerGroup.torrents
+      })
+    })
+
+    return Object.values(catalogGroups)
   }
 
   getInfoCache (imdbId) {
@@ -84,6 +184,10 @@ class BetorCatalog {
 
   setInfoCache (imdbId, itemInfo) {
     try {
+      const cacheDir = '.cache'
+      if (!fs.existsSync(cacheDir)) {
+        fs.mkdirSync(cacheDir, { recursive: true })
+      }
       this.write(`.cache/info-${imdbId}.json`, itemInfo)
       console.info(`${imdbId} cached!`)
     } catch (err) {
@@ -92,6 +196,9 @@ class BetorCatalog {
   }
 
   async getItemInfoFromImdb (item) {
+    if (!this.env.tmdbApiKey) {
+      throw new Error('TMDB_API_KEY environment variable is not set')
+    }
     const url = `https://api.themoviedb.org/3/find/${item.imdb_id}?external_source=imdb_id&language=pt-BR`
     const options = {
       method: 'GET',
