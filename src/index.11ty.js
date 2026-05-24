@@ -1,11 +1,11 @@
-import renderPaginatedPage from './components/pages/paginated.js'
+import renderTorrentList from './render/pages/torrent-list.js'
 
 export default class Index {
   data () {
     return {
       pagination: {
-        data: 'items',
-        size: 20,
+        data: 'catalogItems',
+        size: 50,
         alias: 'item'
       },
       permalink: ({ pagination }) => {
@@ -18,6 +18,6 @@ export default class Index {
   }
 
   render ({ pagination }) {
-    return renderPaginatedPage(pagination)
+    return renderTorrentList(pagination)
   }
 }
