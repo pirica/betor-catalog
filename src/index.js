@@ -128,39 +128,32 @@ class BetorCatalog {
   async dataFetchItems () {
     console.log('fetching items from Betor API...')
 
-    const items = await this.fetchItems()
-    console.log(`${items.length} items found`)
-    this.write(ITEMS_PATH, items)
-
-    console.log(`items fetched and written to file: ${ITEMS_PATH}`)
-  }
-
-  async fetchItems (page = 1, attempt = 1, items = []) {
-    const url = `${this.options.betorApiUrl}/v1/items/?sort=inserted_at&size=100&page=${page}`
-    console.log(`fetching items page ${page}: ${url}`)
+    const url = `${this.options.betorApiUrl}/v1/admin/download-items/`
     const res = await fetch(url, {
       headers: this.options.betorApiAuthorization ? { Authorization: `Basic ${this.options.betorApiAuthorization}` } : {}
     })
+
     if (!res.ok) {
-      if (attempt <= 5) {
-        console.warn(`Error to fetch page ${page}: ${res.status}, retrying... (attempt ${attempt})`)
-        return this.fetchItems(page, attempt + 1, items)
-      }
-      throw new Error(`Error to fetch page ${page}: ${res.status}`)
+      throw new Error(`Error requesting items dump: ${res.status}`)
     }
+
     const data = await res.json()
-    if (!data.items || !Array.isArray(data.items)) {
-      throw new Error('Unexpected body!')
+    if (!data.download_url) {
+      throw new Error('download_url missing from items dump response')
     }
-    const newItems = [...items, ...data.items]
-    if (page >= data.pages) {
-      return newItems
+
+    console.log(`download URL received: ${data.download_url}`)
+
+    const itemsDownloadUrlRes = await fetch(data.download_url)
+    if (!itemsDownloadUrlRes.ok) {
+      throw new Error(`Error downloading items file: ${itemsDownloadUrlRes.status}`)
     }
-    if (this.options.pagesLimit && page >= this.options.pagesLimit) {
-      console.log(`Reached page limit of ${this.options.pagesLimit} pages`)
-      return newItems
-    }
-    return this.fetchItems(page + 1, 1, newItems)
+
+    const items = await itemsDownloadUrlRes.json()
+    console.log(`${Array.isArray(items) ? items.length : 0} items downloaded`)
+    this.write(ITEMS_PATH, items)
+
+    console.log(`items fetched and written to file: ${ITEMS_PATH}`)
   }
 
   /*
