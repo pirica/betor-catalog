@@ -57,7 +57,7 @@ body {
   font-variation-settings: "wdth" 100;
   color: whitesmoke;
   background-color: var(--color-background);
-  background: radial-gradient(circle at 0% 0%, black, var(--color-background));
+  background: radial-gradient(circle at 0% 0%, black, var(--color-background)) no-repeat fixed;
 }
 
 .background-image {
