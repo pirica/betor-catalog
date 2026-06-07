@@ -1,6 +1,6 @@
 import renderCatalog from './render/pages/catalog.js'
 
-export default class Index {
+export default class CatalogMovies {
   data () {
     return {
       pagination: {

@@ -1,6 +1,6 @@
 import renderItems from './render/pages/items.js'
 
-export default class Index {
+export default class Movies {
   data () {
     return {
       pagination: {

@@ -1,6 +1,6 @@
 import renderHome from './render/pages/home.js'
 
-export default class Index {
+export default class Home {
   data () {
     return {
       permalink: 'index.html'
