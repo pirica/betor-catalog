@@ -358,3 +358,26 @@ section > h2 {
   font-size: .75rem;
   text-align: center;
 }
+
+
+/*
+  Catalog Full Item
+*/
+
+.catalog-full-item > .about {
+  display: flex;
+  gap: 1rem;
+}
+
+.catalog-full-item > .about > .content > h1 {
+  margin: 1rem 0;
+  padding: 0;
+  font-size: 2rem;
+}
+
+.catalog-full-item > .about > .poster {
+  display: block;
+  width: 150px;
+  height: auto;
+  border-radius: .25rem;
+}
