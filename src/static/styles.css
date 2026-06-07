@@ -160,6 +160,7 @@ header > ul > li > a {
 */
 
 footer {
+  margin-top: 4rem;
   padding: 1rem;
   background-color: var(--color-background);
 }
