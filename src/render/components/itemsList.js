@@ -1,5 +1,7 @@
+import renderItem from './item.js'
+
 export default (items) => (`
-  <ul>
-    ${items.map(item => `<li>${item.id}</li>`).join('')}
-  </ul>
+  <div class="items-list">
+    ${items.map(item => renderItem(item)).join('')}
+  </div>
 `)
