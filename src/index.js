@@ -210,7 +210,8 @@ class BetorCatalog {
       }
     })
 
-    const catalogItems = await this.enrichCatalogItems(Object.values(catalogItemsByImdbId))
+    const enrichedCatalogItems = await this.enrichCatalogItems(Object.values(catalogItemsByImdbId))
+    const catalogItems = enrichedCatalogItems.filter(item => (item.title || item.name))
     const catalogMoviesItems = catalogItems.filter(({ item_type: itemType }) => (itemType === 'movie'))
     const catalogTvItems = catalogItems.filter(({ item_type: itemType }) => (itemType === 'tv'))
     console.log(`${catalogItems.length} catalog items generated`)
