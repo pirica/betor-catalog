@@ -309,3 +309,20 @@ section > h2 {
   border-radius: .25rem;
   word-break: break-word;
 }
+
+/*
+  Items Paginated
+*/
+
+.items-paginated > .pagination {
+  margin: 2rem 0;
+  font-size: 1.25rem;
+}
+
+.items-paginated > .pagination > .previous {
+  float: left;
+}
+
+.items-paginated > .pagination > .next {
+  float: right;
+}
