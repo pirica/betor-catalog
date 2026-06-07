@@ -5,10 +5,12 @@ import PQueue from 'p-queue'
 const CACHE_DIR = '.cache'
 
 const ITEMS_PATH = 'src/_data/items.json'
-const CATALOG_ITEMS_PATH = 'src/_data/catalogItems.json'
 const MOVIES_PATH = 'src/_data/movies.json'
 const TVS_PATH = 'src/_data/tvs.json'
-const TVS_BY_SEASON_PATH = 'src/_data/tvsBySeason.json'
+const CATALOG_PATH = 'src/_data/catalog.json'
+const CATALOG_MOVIES_PATH = 'src/_data/catalogMovies.json'
+const CATALOG_TVS_PATH = 'src/_data/catalogTvs.json'
+const CATALOG_TVS_BY_SEASON_PATH = 'src/_data/catalogTvsBySeason.json'
 
 class BetorCatalog {
   constructor (options) {
@@ -152,9 +154,18 @@ class BetorCatalog {
     const items = await itemsDownloadUrlRes.json()
     console.log(`${Array.isArray(items) ? items.length : 0} items downloaded`)
     const sortedItems = items.sort((a, b) => new Date(b.inserted_at) - new Date(a.inserted_at))
-    this.write(ITEMS_PATH, sortedItems)
 
+    this.write(ITEMS_PATH, sortedItems)
     console.log(`items fetched and written to file: ${ITEMS_PATH}`)
+
+    const movies = sortedItems.filter(({ item_type: itemType }) => (itemType === 'movie'))
+    const tvs = sortedItems.filter(({ item_type: itemType }) => (itemType === 'tv'))
+
+    this.write(MOVIES_PATH, movies)
+    console.log(`movies data written to file: ${MOVIES_PATH}`)
+
+    this.write(TVS_PATH, tvs)
+    console.log(`tv shows data written to file: ${TVS_PATH}`)
   }
 
   /*
@@ -204,14 +215,14 @@ class BetorCatalog {
     const catalogTvItems = catalogItems.filter(({ item_type: itemType }) => (itemType === 'tv'))
     console.log(`${catalogItems.length} catalog items generated`)
 
-    this.write(CATALOG_ITEMS_PATH, catalogItems)
-    console.log(`catalog items built and written to file: ${CATALOG_ITEMS_PATH}`)
+    this.write(CATALOG_PATH, catalogItems)
+    console.log(`catalog items built and written to file: ${CATALOG_PATH}`)
 
-    this.write(MOVIES_PATH, catalogMoviesItems)
-    console.log(`movies data written to file: ${MOVIES_PATH}`)
+    this.write(CATALOG_MOVIES_PATH, catalogMoviesItems)
+    console.log(`movies data written to file: ${CATALOG_MOVIES_PATH}`)
 
-    this.write(TVS_PATH, catalogTvItems)
-    console.log(`tv shows data written to file: ${TVS_PATH}`)
+    this.write(CATALOG_TVS_PATH, catalogTvItems)
+    console.log(`tv shows data written to file: ${CATALOG_TVS_PATH}`)
 
     const catalogTvItemsBySeason = catalogTvItems.map(item => {
       const seasons = [
@@ -222,8 +233,8 @@ class BetorCatalog {
         season
       }))
     }).flat()
-    this.write(TVS_BY_SEASON_PATH, catalogTvItemsBySeason)
-    console.log(`tv shows by season data written to file: ${TVS_BY_SEASON_PATH}`)
+    this.write(CATALOG_TVS_BY_SEASON_PATH, catalogTvItemsBySeason)
+    console.log(`tv shows by season data written to file: ${CATALOG_TVS_BY_SEASON_PATH}`)
   }
 
   /*

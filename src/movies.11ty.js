@@ -4,20 +4,20 @@ export default class Index {
   data () {
     return {
       pagination: {
-        data: 'items',
+        data: 'movies',
         size: 50,
         alias: 'item'
       },
       permalink: ({ pagination }) => {
         if (pagination.pageNumber > 0) {
-          return `torrents/${pagination.pageNumber + 1}/index.html`
+          return `filmes/${pagination.pageNumber + 1}/index.html`
         }
-        return 'torrents/index.html'
+        return 'filmes/index.html'
       }
     }
   }
 
   render ({ pagination }) {
-    return renderTorrents(pagination, 'Torrents - Catálogo BeTor')
+    return renderTorrents(pagination, 'Filmes - Catálogo BeTor')
   }
 }

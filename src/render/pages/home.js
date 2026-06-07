@@ -2,16 +2,16 @@ import renderBase from '../base.js'
 import renderCatalogItemsList from '../components/catalogItemsList.js'
 import renderItemsPaginated from '../components/itemsPaginated.js'
 
-export default ({ newlyItems, newlyMovies, newlyTvs }) => renderBase({
+export default ({ newlyItems, newlyCatalogMovies, newlyCatalogTvs }) => renderBase({
   content: `
     <section>
       <h1>Lançamentos</h1>
       <h2>Filmes</h2>
-      ${renderCatalogItemsList(newlyMovies)}
-      <p><a href="/filmes/">Ver todos</a></p>
+      ${renderCatalogItemsList(newlyCatalogMovies)}
+      <p><a href="/catalogo/filmes/">Ver todos</a></p>
       <h2>Séries</h2>
-      ${renderCatalogItemsList(newlyTvs)}
-      <p><a href="/series/">Ver todos</a></p>
+      ${renderCatalogItemsList(newlyCatalogTvs)}
+      <p><a href="/catalogo/series/">Ver todos</a></p>
     </section>
     <section>
       <h1>Torrents</h1>

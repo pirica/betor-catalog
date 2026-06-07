@@ -7,10 +7,10 @@ export default class Index {
     }
   }
 
-  render ({ items, movies, tvs }) {
+  render ({ items, catalogMovies, catalogTvs }) {
     const newlyItems = items.slice(0, 50)
-    const newlyMovies = movies.sort((a, b) => new Date(b.inserted_at) - new Date(a.inserted_at)).slice(0, 12)
-    const newlyTvs = tvs.sort((a, b) => new Date(b.inserted_at) - new Date(a.inserted_at)).slice(0, 12)
-    return renderHome({ newlyItems, newlyMovies, newlyTvs })
+    const newlyCatalogMovies = catalogMovies.sort((a, b) => new Date(b.inserted_at) - new Date(a.inserted_at)).slice(0, 12)
+    const newlyCatalogTvs = catalogTvs.sort((a, b) => new Date(b.inserted_at) - new Date(a.inserted_at)).slice(0, 12)
+    return renderHome({ newlyItems, newlyCatalogMovies, newlyCatalogTvs })
   }
 }
