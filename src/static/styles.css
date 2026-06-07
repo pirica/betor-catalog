@@ -330,3 +330,31 @@ section > h2 {
 .items-paginated > .pagination > .next {
   float: right;
 }
+
+
+/*
+  Catalog Items List
+*/
+
+.catalog-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.catalog-items > .catalog-item {
+  display: block;
+}
+
+.catalog-items > .catalog-item > img.poster {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: .25rem;
+}
+
+.catalog-items > .catalog-item > .title {
+  padding: .5rem 0;
+  font-size: .75rem;
+  text-align: center;
+}

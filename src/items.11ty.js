@@ -1,4 +1,4 @@
-import renderTorrents from './render/pages/torrents.js'
+import renderItems from './render/pages/items.js'
 
 export default class Index {
   data () {
@@ -10,14 +10,14 @@ export default class Index {
       },
       permalink: ({ pagination }) => {
         if (pagination.pageNumber > 0) {
-          return `torrents/${pagination.pageNumber + 1}/index.html`
+          return `filmes-e-series/${pagination.pageNumber + 1}/index.html`
         }
-        return 'torrents/index.html'
+        return 'filmes-e-series/index.html'
       }
     }
   }
 
   render ({ pagination }) {
-    return renderTorrents(pagination, 'Torrents - Catálogo BeTor')
+    return renderItems(pagination, 'Filmes e Séries - Catálogo BeTor')
   }
 }

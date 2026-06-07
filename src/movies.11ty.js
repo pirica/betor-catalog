@@ -1,4 +1,4 @@
-import renderTorrents from './render/pages/torrents.js'
+import renderItems from './render/pages/items.js'
 
 export default class Index {
   data () {
@@ -18,6 +18,6 @@ export default class Index {
   }
 
   render ({ pagination }) {
-    return renderTorrents(pagination, 'Filmes - Catálogo BeTor')
+    return renderItems(pagination, 'Filmes - Catálogo BeTor')
   }
 }

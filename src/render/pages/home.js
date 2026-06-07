@@ -8,10 +8,10 @@ export default ({ newlyItems, newlyCatalogMovies, newlyCatalogTvs }) => renderBa
       <h1>Lançamentos</h1>
       <h2>Filmes</h2>
       ${renderCatalogItemsList(newlyCatalogMovies)}
-      <p><a href="/catalogo/filmes/">Ver todos</a></p>
+      <p class="text-right"><a href="/catalogo/filmes/">Ver todos</a></p>
       <h2>Séries</h2>
       ${renderCatalogItemsList(newlyCatalogTvs)}
-      <p><a href="/catalogo/series/">Ver todos</a></p>
+      <p class="text-right"><a href="/catalogo/series/">Ver todos</a></p>
     </section>
     <section>
       <h1>Torrents</h1>

@@ -9,9 +9,9 @@ export default ({ title, content, backgroundImage } = {}) => `<html lang="pt-BR"
   <header>
     <a class="header-link" href="/"><h1>Catálogo BeTor</h1></a>
     <ul>
-      <li><a href="/filmes/">FILMES</a></li>
-      <li><a href="/series/">SÉRIES</a></li>
-      <li><a href="/torrents/">TORRENTS</a></li>
+      <li><a href="/catalogo/filmes/">FILMES</a></li>
+      <li><a href="/catalogo/series/">SÉRIES</a></li>
+      <li><a href="/filmes-e-series/">TORRENTS</a></li>
     </ul>
   </header>
   <main>${content || ''}</main>
