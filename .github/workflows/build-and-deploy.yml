@@ -26,7 +26,8 @@ jobs:
     - run: npm link
     - env:
         TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
-      run: betor-catalog -b ${{ vars.BETOR_API_URL }} -a ${{ secrets.BETOR_API_AUTHORIZATION }} build-items
+      run: betor-catalog -b ${{ vars.BETOR_API_URL }} -a ${{ secrets.BETOR_API_AUTHORIZATION }} data-fetch-items
+    - run: betor-catalog data-catalog-items
     - run: betor-catalog build
     - run: cp src/_data/*.json dist/static/data
     - run: npm install surge
