@@ -1,4 +1,4 @@
-import { providerName, tmdbUrl, formatBytes } from '../../utils.js'
+import { providerName, tmdbUrl, formatBytes, toLocaleString } from '../../utils.js'
 
 export default (item) => {
   const torrentName = item.torrent_name || item.magnet_dn || '-'
@@ -59,6 +59,9 @@ export default (item) => {
           ${item.torrent_files.map(file => `<span class="file">${file}</span>`).join('')}
         </div>`
 : ''}
+        <div class="updated">
+          <p data-updated-at="${item.updated_at}">Última atualização: ${toLocaleString(item.updated_at)}</p>
+        </div>
       </div>
   `
 }

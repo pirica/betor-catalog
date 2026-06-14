@@ -20,7 +20,7 @@ export const formatBytes = (bytes, decimals = 2) => {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
 
-export const toLocaleString = value => {
+export const toLocaleString = (value) => {
   const date = new Date(value)
   return date.toLocaleString('pt-br', { timeZone: 'America/Sao_Paulo' })
 }

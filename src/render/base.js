@@ -35,5 +35,7 @@ export default ({ title, content, backgroundImage } = {}) => `<html lang="pt-BR"
   <div class="background-image">
     <img src="${backgroundImage || 'https://image.tmdb.org/t/p/w1920/9Z2uDYXqJrlmePznQQJhL6d92Rq.jpg'}" alt="Imagem de fundo" />
   </div>
+  <script src="https://momentjs.com/downloads/moment-with-locales.min.js"></script>
+  <script src="/static/moment.js"></script>
 </body>
 </html>`

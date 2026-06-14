@@ -314,6 +314,16 @@ section > h2 {
   word-break: break-word;
 }
 
+.item > .updated {
+  margin: 1rem 0 0;
+}
+
+.item > .updated > p {
+  color: rgba(255, 255, 255, .5);
+  font-size: .75rem;
+  text-align: center;
+}
+
 /*
   Items Paginated
 */
