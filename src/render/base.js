@@ -1,9 +1,17 @@
-export default ({ title, content, backgroundImage } = {}) => `<html lang="pt-BR">
+export default ({ title, content, backgroundImage, q } = {}) => `<html lang="pt-BR">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${title || 'Catálogo BeTor'}</title>
   <link rel="stylesheet" href="/static/styles.css">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DB54CJJ7SK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-DB54CJJ7SK');
+  </script>
 </head>
 <body>
   <header>
@@ -14,6 +22,13 @@ export default ({ title, content, backgroundImage } = {}) => `<html lang="pt-BR"
       <li><a href="/filmes-e-series/">TORRENTS</a></li>
     </ul>
   </header>
+  <div class="search">
+    <p>Buscar:</p>
+    <form action="/search/">
+      <div class="field"><input name="q" required ${q ? `value="${q}"` : ''} /></div>
+      <div class="submit"><button type="submit">🔍</button></div>
+    </form>
+  </div>
   <main>${content || ''}</main>
   <footer>
     <div class="links">
