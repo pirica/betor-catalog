@@ -13,6 +13,12 @@ export default (item) => (`
       </div>
     </div>
     <h2>Torrents:</h2>
+    ${item.available_seasons
+? `<ul class="available-seasons">
+      <li><a href="/imdb/${item.imdb_id}/">Todas temporadas</a></li>
+      ${item.available_seasons.map((s) => `<li><a href="/imdb/${item.imdb_id}/season/${s}/">${s}ª temporada</a></li>`).join('')}
+    </ul>`
+: ''}
     <div class="items">
       ${item.items.map(item => renderItem(item)).join('')}
     </div>
