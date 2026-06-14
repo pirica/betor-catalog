@@ -23,7 +23,7 @@ export default ({ title, content, backgroundImage } = {}) => `<html lang="pt-BR"
       </ul>
       <ul>
         <li><a href="/guia/prowlarr/">Guia Prowlarr</a></li>
-        <li><a href="/download-data/">Baixar Dados</a></li>
+        <li><a href="/guia/baixar/">Baixar Dados</a></li>
       </ul>
       <ul>
         <li><a href="https://github.com/betorbr/betor" target="_blank">Github - betor</a></li>
