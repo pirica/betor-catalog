@@ -4,7 +4,7 @@ export default () => renderBase({
   title: 'Guia Prowlarr - Catálogo BeTor',
   content: `
     <section>
-      <h1>Guia: Prowlarr</h1>
+      <h1>Guia Prowlarr</h1>
       <p>Este guia mostra como adicionar o arquivo customizado do catálogo BeTor ao Prowlarr. Baixe o arquivo YAML <a href="/static/catalogo-betor.yml" target="_blank">catalogo-betor.yml</a> e coloque-o na pasta customizada do Prowlarr.</p>
     </section>
     <section>
