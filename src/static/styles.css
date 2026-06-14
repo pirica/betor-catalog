@@ -391,3 +391,12 @@ section > h2 {
   height: auto;
   border-radius: .25rem;
 }
+
+
+/*
+  Results
+*/
+
+.results > .catalog-full-item {
+  margin: 2rem 0;
+}
