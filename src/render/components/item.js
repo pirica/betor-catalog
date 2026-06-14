@@ -1,7 +1,7 @@
 import { providerName, tmdbUrl, formatBytes, toLocaleString } from '../../utils.js'
 
 export default (item) => {
-  const torrentName = item.torrent_name || item.magnet_dn || '-'
+  const torrentName = item.torrent_name || item.magnet_dn || item.magnet_xt
 
   return `
     <div
@@ -34,10 +34,10 @@ export default (item) => {
           <div class="name">${torrentName}</div>
           <div class="download-info">
             <div class="peers-seeds">
-              <span><strong>Peers:</strong> ${item.torrent_num_peers || 0}</span>
-              <span><strong>Seeds:</strong> ${item.torrent_num_seeds || 0}</span>
+              <span><strong>Seeds:</strong> ${item.torrent_num_seeds || '-'}</span>
+              <span><strong>Peers:</strong> ${item.torrent_num_peers || '-'}</span>
             </div>
-            <div class="size">${formatBytes(item.torrent_size || 0)}</div>
+            ${item.torrent_size ? `<div class="size">${formatBytes(item.torrent_size)}</div>` : ''}
           </div>
         </div>
         <div class="content-info">
