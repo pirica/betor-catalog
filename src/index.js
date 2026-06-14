@@ -208,6 +208,12 @@ class BetorCatalog {
         }
         catalogItem.items.push(item)
       }
+      if (item.item_type === 'tv') {
+        if (!catalogItemsByImdbId[catalogKey].available_seasons) {
+          catalogItemsByImdbId[catalogKey].available_seasons = []
+        }
+        catalogItemsByImdbId[catalogKey].available_seasons = new Set(catalogItemsByImdbId[catalogKey].available_seasons.concat(item.seasons)).values().toArray().sort()
+      }
     })
 
     const enrichedCatalogItems = await this.enrichCatalogItems(Object.values(catalogItemsByImdbId))
@@ -231,6 +237,7 @@ class BetorCatalog {
       ]
       return seasons.map(season => ({
         ...item,
+        items: item.items.filter((i) => i.seasons.includes(season)),
         season
       }))
     }).flat()
