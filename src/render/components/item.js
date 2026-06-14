@@ -26,7 +26,6 @@ export default (item) => {
         <div class="top">
           <a class="provider" href="${item.provider_url}" target="_blank">${providerName(item.provider_slug)}</a>
           <div class="download">
-            <a href="${item.magnet_uri}">🧲</a>
             ${item.download_url ? `<a href="${item.download_url}" target="_blank">⬇️</a>` : ''}
           </div>
         </div>
