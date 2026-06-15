@@ -16,7 +16,7 @@ export default ({ newlyItems, newlyCatalogMovies, newlyCatalogTvs }) => renderBa
     </section>
     <section>
       <h1>Torrents</h1>
-      ${renderItemsPaginated(newlyItems, null, '/torrents/2/')}
+      ${renderItemsPaginated(newlyItems, null, '/filmes-e-series/2/')}
     </section>
   `
 })
