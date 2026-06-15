@@ -43,7 +43,7 @@ export default (item) => {
           ${item.imdb_id || item.tmdb_id
 ? `<div class="databases">
             ${item.imdb_id ? `<div><strong>IMDb:</strong> <a class="imdb" href="https://www.imdb.com/pt/title/${item.imdb_id}/" target="_blank">${item.imdb_id}</a></div>` : ''}
-            ${item.tmdb_id ? `<div><strong>TMDb:</strong> <a class="tmdb" href="${tmdbUrl(item)}/" target="_blank">${item.tmdb_id}</a></div>` : ''}
+            ${item.tmdb_id && item.item_type ? `<div><strong>TMDb:</strong> <a class="tmdb" href="${tmdbUrl(item)}/" target="_blank">${item.tmdb_id}</a></div>` : ''}
           </div>`
 : ''}
           ${item.languages.length > 0
