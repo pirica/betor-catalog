@@ -24,10 +24,10 @@ jobs:
         key: betor-cache-${{ steps.date.outputs.today }}
     - run: npm ci
     - run: npm link
+    - run: betor-catalog -b ${{ vars.BETOR_API_URL }} -a ${{ secrets.BETOR_API_AUTHORIZATION }} data-fetch-items
     - env:
         TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
-      run: betor-catalog -b ${{ vars.BETOR_API_URL }} -a ${{ secrets.BETOR_API_AUTHORIZATION }} data-fetch-items
-    - run: betor-catalog data-catalog-items
+      run: betor-catalog data-catalog-items
     - run: betor-catalog build
     - run: cp src/_data/*.json dist/static/data
     - run: npm install surge
