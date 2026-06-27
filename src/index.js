@@ -136,7 +136,7 @@ class BetorCatalog {
       bp: catalogItem.backdrop_path,
       pp: catalogItem.poster_path,
       it: catalogItem.item_type,
-      as: catalogItem.available_seasons || [],
+      as: catalogItem.available_seasons === undefined ? null : catalogItem.available_seasons,
       items: catalogItem.items.map((item) => ({
         id: item.id,
         it: item.item_type,

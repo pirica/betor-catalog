@@ -15,7 +15,7 @@ const expandSearchItem = (item) => ({
   backdrop_path: item.bp,
   poster_path: item.pp,
   item_type: item.it,
-  available_seasons: item.as || [],
+  available_seasons: item.as === null ? undefined : item.as,
   items: (item.items || []).map((nested) => ({
     ...nested,
     item_type: nested.it,
