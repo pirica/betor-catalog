@@ -11,6 +11,7 @@ const CATALOG_PATH = 'src/_data/catalog.json'
 const CATALOG_MOVIES_PATH = 'src/_data/catalogMovies.json'
 const CATALOG_TVS_PATH = 'src/_data/catalogTvs.json'
 const CATALOG_TVS_BY_SEASON_PATH = 'src/_data/catalogTvsBySeason.json'
+const SEARCH_CATALOG_PATH = 'src/_data/searchCatalog.json'
 
 class BetorCatalog {
   constructor (options) {
@@ -123,6 +124,42 @@ class BetorCatalog {
     return catalogItem
   }
 
+  compactCatalogItemForSearch (catalogItem) {
+    return {
+      t: catalogItem.title || catalogItem.name,
+      ot: catalogItem.original_title,
+      n: catalogItem.name,
+      on: catalogItem.original_name,
+      rd: catalogItem.release_date || catalogItem.first_air_date,
+      ii: catalogItem.imdb_id,
+      ti: catalogItem.tmdb_id,
+      bp: catalogItem.backdrop_path,
+      pp: catalogItem.poster_path,
+      it: catalogItem.item_type,
+      as: catalogItem.available_seasons || [],
+      items: catalogItem.items.map((item) => ({
+        id: item.id,
+        it: item.item_type,
+        ii: item.imdb_id,
+        ti: item.tmdb_id,
+        pu: item.provider_url,
+        ps: item.provider_slug,
+        du: item.download_url,
+        tn: item.torrent_name,
+        md: item.magnet_dn,
+        mx: item.magnet_xt,
+        mu: item.magnet_uri,
+        lg: item.languages || [],
+        sz: item.torrent_size,
+        fs: item.torrent_files,
+        np: item.torrent_num_peers,
+        ns: item.torrent_num_seeds,
+        ua: item.updated_at,
+        ia: item.inserted_at
+      }))
+    }
+  }
+
   /*
     Data: Fetch Items
   */
@@ -230,6 +267,10 @@ class BetorCatalog {
 
     this.write(CATALOG_TVS_PATH, catalogTvItems)
     console.log(`tv shows data written to file: ${CATALOG_TVS_PATH}`)
+
+    const searchCatalogItems = catalogItems.map(item => this.compactCatalogItemForSearch(item))
+    this.write(SEARCH_CATALOG_PATH, searchCatalogItems)
+    console.log(`search catalog data written to file: ${SEARCH_CATALOG_PATH}`)
 
     const catalogTvItemsBySeason = catalogTvItems.map(item => {
       const seasons = [

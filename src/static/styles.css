@@ -376,7 +376,14 @@ section > h2 {
 
 .catalog-full-item > .about {
   display: flex;
+  flex-direction: column;
   gap: 1rem;
+}
+
+@media screen and (min-width: 800px) {
+  .catalog-full-item > .about {
+    flex-direction: row;
+  }
 }
 
 .catalog-full-item > .about > .content > h1 {
@@ -387,9 +394,20 @@ section > h2 {
 
 .catalog-full-item > .about > .poster {
   display: block;
-  width: 150px;
+  width: 100%;
+  max-width: 150px;
+}
+
+.catalog-full-item > .about.no-overview > .poster {
+  max-width: 100px;
+}
+
+.catalog-full-item > .about > .poster > img {
+  display: block;
+  width: 100%;
   height: auto;
   border-radius: .25rem;
+  margin: 1rem 0;
 }
 
 

@@ -1,17 +1,52 @@
 import Fuse from 'fuse.js'
-import catalog from './_data/catalog.json'
+import searchCatalog from './_data/searchCatalog.json'
 import renderCatalogFullItem from './render/components/catalogFullItem.js'
 import renderBase from './render/base.js'
 
-const fuse = new Fuse(catalog, {
+const expandSearchItem = (item) => ({
+  ...item,
+  title: item.t || item.n,
+  original_title: item.ot,
+  name: item.n,
+  original_name: item.on,
+  release_date: item.rd,
+  imdb_id: item.ii,
+  tmdb_id: item.ti,
+  backdrop_path: item.bp,
+  poster_path: item.pp,
+  item_type: item.it,
+  available_seasons: item.as || [],
+  items: (item.items || []).map((nested) => ({
+    ...nested,
+    item_type: nested.it,
+    imdb_id: nested.ii,
+    tmdb_id: nested.ti,
+    provider_url: nested.pu,
+    provider_slug: nested.ps,
+    download_url: nested.du,
+    torrent_name: nested.tn,
+    magnet_dn: nested.md,
+    magnet_xt: nested.mx,
+    magnet_uri: nested.mu,
+    languages: nested.lg || [],
+    torrent_size: nested.sz,
+    torrent_files: nested.fs,
+    torrent_num_peers: nested.np,
+    torrent_num_seeds: nested.ns,
+    updated_at: nested.ua,
+    inserted_at: nested.ia
+  }))
+})
+
+const fuse = new Fuse(searchCatalog, {
   keys: [
-    'title',
-    'original_title',
-    'name',
-    'original_name',
-    'release_date',
-    'imdb_id',
-    'tmdb_id'
+    't',
+    'ot',
+    'n',
+    'on',
+    'rd',
+    'ii',
+    'ti'
   ],
   threshold: 0.2
 })
@@ -23,12 +58,17 @@ const fetch = async (request, env, ctx) => {
     return new Response(null, { status: 404 })
   }
   const results = fuse.search(q)
-  console.log(results)
-  const resultContent = results.map(({ item }) => renderCatalogFullItem(item)).join('')
+  const expandedResults = results.map((result) => ({
+    ...result,
+    item: expandSearchItem(result.item)
+  }))
+  const resultContent = expandedResults.map(({ item }) => renderCatalogFullItem(item)).join('')
+  const firstItem = expandedResults[0]?.item
+
   return new Response(
     renderBase({
       title: `Resultados da busca "${q}" - Catálogo BeTor`,
-      backgroundImage: results.length > 0 && results[0].item?.backdrop_path ? `https://image.tmdb.org/t/p/w1920${results[0].item.backdrop_path}` : undefined,
+      backgroundImage: firstItem?.backdrop_path ? `https://image.tmdb.org/t/p/w1920${firstItem.backdrop_path}` : undefined,
       q,
       content: `
         <section>
